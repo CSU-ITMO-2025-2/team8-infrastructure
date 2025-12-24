@@ -4,3 +4,6 @@
 [submodule "backend"]
 	path = backend
 	url = https://github.com/CSU-ITMO-2025-2/team8-backend
+[submodule "llm-worker"]
+	path = llm-worker
+	url = https://github.com/CSU-ITMO-2025-2/team-8-llm-worker
