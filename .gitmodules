@@ -7,3 +7,6 @@
 [submodule "llm-worker"]
 	path = llm-worker
 	url = https://github.com/CSU-ITMO-2025-2/team-8-llm-worker
+[submodule "team8-frontend"]
+	path = team8-frontend
+	url = https://github.com/CSU-ITMO-2025-2/team8-frontend
