@@ -26,7 +26,7 @@ services:
     restart: always
 
   kafka:
-    image: bitnami/kafka:4.0.0-debian-12-r3
+    image: bitnamilegacy/kafka:4.0.0-debian-12-r10
     ports:
       - "9092:9092"
       - "9094:9094"
@@ -91,6 +91,17 @@ services:
       kafka:
         condition: service_healthy
     restart: always
+
+  web:
+    build: ./team8-frontend
+    container_name: maxbot-web
+    depends_on:
+      - backend
+    ports:
+      - "3000:4173"
+    environment:
+      - API_ROUTE=backend
+    restart: unless-stopped
 
 volumes:
   kafka_data:
