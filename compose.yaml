@@ -45,7 +45,7 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "9092" ]
+      test: ["CMD-SHELL", "bash -ec 'echo > /dev/tcp/127.0.0.1/9092'"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -94,11 +94,13 @@ services:
 
   web:
     build: ./team8-frontend
-    container_name: maxbot-web
+    container_name: team8-frontend
     depends_on:
       - backend
     ports:
       - "3000:4173"
+    env_file:
+      - team8-frontend/.env
     environment:
       - API_ROUTE=backend
     restart: unless-stopped
