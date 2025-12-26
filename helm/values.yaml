@@ -41,23 +41,24 @@ app:
 #      cpu: 1500m
 #      memory: 3Gi
 
-#frontend:
-#  enabled: true
-#  image:
-#    repository: ghcr.io/CSU-ITMO-2025-2/team8-frontend
-#    tag: sha-591244a
-#  containerPort: 4173
-#  env:
-#    API_ROUTE: "backend" # или "http://backend:8080"
-#  service:
-#    port: 80
-#  resources:
-#    requests:
-#      cpu: 100m
-#      memory: 128Mi
-#    limits:
-#      cpu: 250m
-#      memory: 256Mi
+frontend:
+  enabled: true
+  image:
+    repository: ghcr.io/csu-itmo-2025-2/team8-frontend
+    tag: sha-591244a
+  containerPort: 4173
+  env:
+    API_ROUTE: "backend"
+  service:
+    port: 80
+    targetPort: 4173
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
 
 #migrations:
 #  enabled: true
