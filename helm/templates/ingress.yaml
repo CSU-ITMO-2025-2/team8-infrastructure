@@ -35,7 +35,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ .Values.frontend.className }}
+                name: frontend
                 port:
                   number: {{ $svcPort }}
           {{- end }}
