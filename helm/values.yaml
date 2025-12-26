@@ -107,6 +107,10 @@ serviceBackend:
   type: ClusterIP
   port: 80
 
+service-front:
+  type: ClusterIP
+  port: 4173
+
 ingress:
   enabled: true
   className: "nginx"
