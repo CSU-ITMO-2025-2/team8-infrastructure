@@ -35,7 +35,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ $fullName }}-frontend
+                name: frontend
                 port:
                   number: {{ $svcPort }}
           {{- end }}
