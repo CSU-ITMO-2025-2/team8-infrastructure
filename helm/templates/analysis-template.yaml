@@ -1,4 +1,4 @@
-{{- $rollout := .Values.backend.rollout }}
+{{- $rollout := .Values.app.rollout }}
 {{- $analysisTemplate := $rollout.analysisTemplate }}
 {{- if and $rollout.enabled $analysisTemplate.enabled }}
 apiVersion: argoproj.io/v1alpha1

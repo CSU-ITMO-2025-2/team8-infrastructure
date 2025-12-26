@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.backend.replicaCount | default 1 }}
+  replicas: {{ .Values.app.replicaCount | default 1 }}
   selector:
     matchLabels:
       {{- include "team8-app.selectorLabels" . | nindent 6 }}
@@ -26,28 +26,31 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: backend
+        - name: app
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: {{ .Values.backend.containerPort | default 8080 }}
+              containerPort: {{ .Values.app.containerPort | default 8080 }}
               protocol: TCP
           env:
-            {{- with .Values.backend.env }}
+            {{- with .Values.app.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
           resources:
-            {{- toYaml .Values.backend.resources | nindent 12 }}
+            {{- toYaml .Values.app.resources | nindent 12 }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or .Values.podAntiAffinity.enabled .Values.affinity }}
+
+      {{- $paa := .Values.podAntiAffinity | default dict -}}
+      {{- if or ($paa.enabled | default false) .Values.affinity }}
       affinity:
-        {{- if .Values.podAntiAffinity.enabled }}
+        {{- if ($paa.enabled | default false) }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
@@ -55,12 +58,13 @@ spec:
               labelSelector:
                 matchLabels:
                   app.kubernetes.io/name: {{ include "team8-app.name" . }}
-              topologyKey: {{ .Values.podAntiAffinity.topologyKey | default "kubernetes.io/hostname" }}
+              topologyKey: {{ $paa.topologyKey | default "kubernetes.io/hostname" }}
         {{- end }}
         {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       {{- end }}
+
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
