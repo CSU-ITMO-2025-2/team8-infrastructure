@@ -60,6 +60,7 @@ frontend:
     - name: API_ROUTE
       value: app
   service:
+    type: ClusterIP
     port: 80
     targetPort: 4173
   resources:
@@ -69,6 +70,7 @@ frontend:
     limits:
       cpu: 250m
       memory: 256Mi
+
 
 #migrations:
 #  enabled: true
