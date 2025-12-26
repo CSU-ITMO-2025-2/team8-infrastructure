@@ -1,12 +1,12 @@
-{{- $rollout := .Values.app.rollout }}
+{{- $rollout := .Values.backend.rollout }}
 {{- $analysisTemplate := $rollout.analysisTemplate }}
 {{- if and $rollout.enabled $analysisTemplate.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
-  name: {{ default (printf "%s-analysis" (include "demo-app.fullname" .)) $analysisTemplate.nameOverride }}
+  name: {{ default (printf "%s-analysis" (include "team8-app.fullname" .)) $analysisTemplate.nameOverride }}
   labels:
-    {{- include "demo-app.labels" . | nindent 4 }}
+    {{- include "team8-app.labels" . | nindent 4 }}
 spec:
   metrics:
     - name: error-rate
@@ -20,8 +20,8 @@ spec:
             sum(
               rate(
                 http_requests_total{
-                  service="demo-app-new",
-                  namespace="demo",
+                  service="team8-app-new",
+                  namespace="team8-ns",
                   status=~"5..",
                   path!~"/metrics|/health"
                 }[1m]
@@ -32,8 +32,8 @@ spec:
               sum(
                 rate(
                   http_requests_total{
-                    service="demo-app-new",
-                    namespace="demo",
+                    service="team8-app-new",
+                    namespace="team8-ns",
                     path!~"/metrics|/health"
                   }[1m]
                 )

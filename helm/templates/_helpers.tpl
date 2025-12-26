@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "demo-app.name" -}}
+{{- define "team8-app.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "demo-app.fullname" -}}
+{{- define "team8-app.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -26,7 +26,7 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "demo-app.chart" -}}
+{{- define "team8-app.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -34,24 +34,24 @@ Create chart name and version as used by the chart label.
 Worker name helpers build on the base app helpers to keep naming consistent.
 */}}
 {{- define "demo-worker.name" -}}
-{{- printf "%s-worker" (include "demo-app.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-worker" (include "team8-app.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "demo-worker.fullname" -}}
-{{- printf "%s-worker" (include "demo-app.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-worker" (include "team8-app.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "demo-worker.chart" -}}
-{{- include "demo-app.chart" . -}}
+{{- include "team8-app.chart" . -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "demo-app.labels" -}}
-helm.sh/chart: {{ include "demo-app.chart" . }}
+{{- define "team8-app.labels" -}}
+helm.sh/chart: {{ include "team8-app.chart" . }}
 sidecar.istio.io/inject: "true"
-{{ include "demo-app.selectorLabels" . }}
+{{ include "team8-app.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -61,8 +61,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "demo-app.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "demo-app.name" . }}
+{{- define "team8-app.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "team8-app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
@@ -89,9 +89,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "demo-app.serviceAccountName" -}}
+{{- define "team8-app.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-{{- default (include "demo-app.fullname" .) .Values.serviceAccount.name -}}
+{{- default (include "team8-app.fullname" .) .Values.serviceAccount.name -}}
 {{- else -}}
 {{- default "default" .Values.serviceAccount.name -}}
 {{- end -}}
@@ -101,5 +101,5 @@ Create the name of the service account to use
 Service account name for worker resources
 */}}
 {{- define "demo-worker.serviceAccountName" -}}
-{{- include "demo-app.serviceAccountName" . -}}
+{{- include "team8-app.serviceAccountName" . -}}
 {{- end -}}

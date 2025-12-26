@@ -86,7 +86,7 @@ services:
     environment:
       KAFKA_SERVERS: "kafka:9092"
     volumes:
-      - hf_cache:/app/.cache/huggingface
+      - hf_cache:/root/.cache/huggingface/
     depends_on:
       kafka:
         condition: service_healthy
