@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "team8-app.fullname" . }}
-  labels:
-    {{- include "team8-app.labels" . | nindent 4 }}
+  name: front
 spec:
-  type: {{ .Values.serviceFront.type }}
-  ports:
-    - port: {{ .Values.serviceFront.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
-    {{- include "team8-app.selectorLabels" . | nindent 4 }}
+    app: front
+  ports:
+    - name: front
+      port: 4173
+      targetPort: 4173
+    - name: controller
+      port: 4173
+      targetPort: 4173
+  type: ClusterIP
