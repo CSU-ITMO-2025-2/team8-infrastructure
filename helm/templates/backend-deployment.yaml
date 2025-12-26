@@ -35,6 +35,9 @@ spec:
             - name: http
               containerPort: {{ .Values.app.containerPort | default 8080 }}
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: db-credentials
           env:
             {{- with .Values.app.env }}
             {{- toYaml . | nindent 12 }}

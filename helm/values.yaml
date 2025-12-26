@@ -24,6 +24,15 @@ app:
     analysisTemplate:
       enabled: false
 
+vault:
+  enabled: true
+  server: "https://vault.kubepractice.ru"
+  kvMount: "kv"
+  kvVersion: "v1"
+  kubernetesAuthMount: "kubernetes"
+  role: "team8-ns"
+  envPath: "team8/backend"
+
 #worker: # llm_worker
 #  image:
 #    repository: ghcr.io/CSU-ITMO-2025-2/<worker-repo>
