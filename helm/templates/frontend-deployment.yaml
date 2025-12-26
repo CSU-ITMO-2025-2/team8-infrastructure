@@ -36,7 +36,7 @@ spec:
               containerPort: {{ .Values.frontend.containerPort | default 80 }}
               protocol: TCP
           env:
-            {{- with .Values.app.env }}
+            {{- with .Values.frontend.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
           resources:
