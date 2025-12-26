@@ -39,7 +39,7 @@ spec:
             - secretRef:
                 name: db-credentials
           env:
-            {{- with .Values.frontend.env }}
+            {{- with .Values.app.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
 
