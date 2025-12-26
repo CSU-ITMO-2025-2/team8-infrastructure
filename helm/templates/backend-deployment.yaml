@@ -35,13 +35,44 @@ spec:
             - name: http
               containerPort: {{ .Values.app.containerPort | default 8080 }}
               protocol: TCP
-          envFrom:
-            - secretRef:
-                name: db-credentials
           env:
-            {{- with .Values.app.env }}
-            {{- toYaml . | nindent 12 }}
-            {{- end }}
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_URL
+                  name: backend
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PORT
+                  name: backend
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: DB_USER
+                  name: backend
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PASSWORD
+                  name: backend
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_NAME
+                  name: backend
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_NAME
+                  name: backend
+            - name: DB_DRIVER_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_DRIVER_NAME
+                  name: backend
+
+
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
 
