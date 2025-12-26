@@ -5,9 +5,9 @@ metadata:
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service-front.type }}
+  type: {{ .Values.serviceFront.type }}
   ports:
-    - port: {{ .Values.service-front.port }}
+    - port: {{ .Values.serviceFront.port }}
       targetPort: http
       protocol: TCP
       name: http

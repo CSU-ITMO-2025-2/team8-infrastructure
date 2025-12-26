@@ -107,7 +107,7 @@ serviceBackend:
   type: ClusterIP
   port: 80
 
-service-front:
+serviceFront:
   type: ClusterIP
   port: 4173
 
