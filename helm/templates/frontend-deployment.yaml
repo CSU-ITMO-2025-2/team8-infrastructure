@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "team8-app.fullname" . }}
+  name: team8-frontend
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
 spec:
