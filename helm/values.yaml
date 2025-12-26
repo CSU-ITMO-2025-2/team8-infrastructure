@@ -111,15 +111,16 @@ ingress:
   enabled: true
   className: "nginx"
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
-    - host: demo.kubepractice.ru
+    - host: team8.kubepractice.ru
       paths:
         - path: /
           pathType: Prefix
   tls:
     - hosts:
-        - demo.kubepractice.ru
+        - team8.kubepractice.ru
       secretName: tls-secret
 #istioIngress:
 #  enabled: true
