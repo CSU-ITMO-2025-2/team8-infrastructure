@@ -71,7 +71,6 @@ frontend:
       cpu: 250m
       memory: 256Mi
 
-
 #migrations:
 #  enabled: true
 #  image: liquibase:4.31.1-alpine
@@ -109,6 +108,9 @@ serviceBackend:
   type: ClusterIP
   port: 80
 
+serviceFront:
+  type: ClusterIP
+  port: 4173
 
 ingress:
   enabled: true

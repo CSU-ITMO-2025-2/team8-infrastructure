@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "team8-app.fullname" . -}}
-{{- $svcPort := .Values.front.port -}}
+{{- $svcPort := .Values.serviceFront.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
