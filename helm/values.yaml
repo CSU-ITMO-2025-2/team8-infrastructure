@@ -108,9 +108,9 @@ serviceBackend:
   type: ClusterIP
   port: 80
 
-serviceFront:
-  type: ClusterIP
-  port: 4173
+#serviceFront:
+#  type: ClusterIP
+#  port: 4173
 
 ingress:
   enabled: true
