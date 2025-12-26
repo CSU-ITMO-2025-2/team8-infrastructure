@@ -103,7 +103,7 @@ podSecurityContext: {}
 
 securityContext: {}
 
-service:
+serviceBackend:
   type: ClusterIP
   port: 80
 
