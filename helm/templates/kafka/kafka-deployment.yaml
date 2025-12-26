@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka
-  labels:
-    app: kafka
 spec:
   replicas: 1
   selector:
@@ -18,10 +16,8 @@ spec:
         - name: kafka
           image: bitnamilegacy/kafka:4.0.0-debian-12-r10
           ports:
-            - name: kafka
-              containerPort: 9092
-            - name: controller
-              containerPort: 9093
+            - containerPort: 9092
+            - containerPort: 9093
           env:
             - name: KAFKA_CFG_NODE_ID
               value: "0"
@@ -42,16 +38,6 @@ spec:
           volumeMounts:
             - name: kafka-data
               mountPath: /bitnami/kafka
-          readinessProbe:
-            tcpSocket:
-              port: 9092
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          livenessProbe:
-            tcpSocket:
-              port: 9092
-            initialDelaySeconds: 20
-            periodSeconds: 20
           resources:
             requests:
               cpu: 250m
@@ -61,5 +47,4 @@ spec:
               memory: 1Gi
       volumes:
         - name: kafka-data
-          persistentVolumeClaim:
-            claimName: kafka-data
+          emptyDir: {}
