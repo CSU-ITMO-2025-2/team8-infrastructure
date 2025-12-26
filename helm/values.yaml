@@ -57,7 +57,8 @@ frontend:
     tag: sha-ed44d38
   containerPort: 4173
   env:
-    API_ROUTE: "app"
+    - name: API_ROUTE
+      value: app
   service:
     port: 80
     targetPort: 4173
