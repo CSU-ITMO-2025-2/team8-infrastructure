@@ -49,7 +49,8 @@ worker:
       value: "kafka:9092"
   hfCache:
     enabled: true
-    size: 10Gi
+    mountPath: /root/.cache/huggingface
+    sizeLimit: 10Gi
   probes:
     readiness:
       path: /health/ready

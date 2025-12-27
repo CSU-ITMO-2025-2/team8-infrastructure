@@ -46,6 +46,10 @@ spec:
               value: {{ .Values.worker.kafka.topic | quote }}
             - name: KAFKA_CONSUMER_GROUP
               value: {{ .Values.worker.kafka.consumerGroup | quote }}
+            {{- if or (not (hasKey .Values.worker "hfCache")) (.Values.worker.hfCache.enabled | default true) }}
+            - name: HF_HOME
+              value: {{ .Values.worker.hfCache.mountPath | default "/root/.cache/huggingface" | quote }}
+            {{- end }}
             {{- with .Values.worker.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -75,6 +79,10 @@ spec:
             {{- if or (not (hasKey .Values.worker "tmpDir")) (.Values.worker.tmpDir.enabled | default true) }}
             - name: tmp-dir
               mountPath: {{ .Values.worker.tmpDir.mountPath | default "/tmp" }}
+            {{- end }}
+            {{- if or (not (hasKey .Values.worker "hfCache")) (.Values.worker.hfCache.enabled | default true) }}
+            - name: hf-cache
+              mountPath: {{ .Values.worker.hfCache.mountPath | default "/root/.cache/huggingface" }}
             {{- end }}
 
           resources:
@@ -115,5 +123,12 @@ spec:
           emptyDir:
             {{- if .Values.worker.tmpDir.sizeLimit }}
             sizeLimit: {{ .Values.worker.tmpDir.sizeLimit }}
+            {{- end }}
+        {{- end }}
+        {{- if or (not (hasKey .Values.worker "hfCache")) (.Values.worker.hfCache.enabled | default true) }}
+        - name: hf-cache
+          emptyDir:
+            {{- if .Values.worker.hfCache.sizeLimit }}
+            sizeLimit: {{ .Values.worker.hfCache.sizeLimit }}
             {{- end }}
         {{- end }}
