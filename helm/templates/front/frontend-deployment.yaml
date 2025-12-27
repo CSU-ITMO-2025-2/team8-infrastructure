@@ -3,12 +3,12 @@ kind: Deployment
 metadata:
   name: team8-frontend
   labels:
-    {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
 spec:
   replicas: {{ .Values.app.replicaCount | default 1 }}
   selector:
     matchLabels:
-      {{- include "team8-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: frontend
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,7 +16,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "team8-app.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: frontend
     spec:
       serviceAccountName: {{ include "team8-app.serviceAccountName" . }}
@@ -54,7 +53,7 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  app.kubernetes.io/name: {{ include "team8-app.name" . }}
+                  app.kubernetes.io/component: frontend
               topologyKey: {{ $paa.topologyKey | default "kubernetes.io/hostname" }}
         {{- end }}
         {{- with .Values.affinity }}
