@@ -48,7 +48,9 @@ spec:
               value: {{ .Values.worker.kafka.consumerGroup | quote }}
             {{- if or (not (hasKey .Values.worker "hfCache")) (.Values.worker.hfCache.enabled | default true) }}
             - name: HF_HOME
-              value: {{ .Values.worker.hfCache.mountPath | default "/root/.cache/huggingface" | quote }}
+              value: {{ .Values.worker.hfCache.mountPath | default "/var/cache/huggingface" | quote }}
+            - name: TRANSFORMERS_CACHE
+              value: {{ .Values.worker.hfCache.mountPath | default "/var/cache/huggingface" | quote }}
             {{- end }}
             {{- with .Values.worker.env }}
             {{- toYaml . | nindent 12 }}
@@ -82,7 +84,7 @@ spec:
             {{- end }}
             {{- if or (not (hasKey .Values.worker "hfCache")) (.Values.worker.hfCache.enabled | default true) }}
             - name: hf-cache
-              mountPath: {{ .Values.worker.hfCache.mountPath | default "/root/.cache/huggingface" }}
+              mountPath: {{ .Values.worker.hfCache.mountPath | default "/var/cache/huggingface" }}
             {{- end }}
 
           resources:
