@@ -44,7 +44,9 @@ worker:
     bootstrapServers: "kafka:9092"
     topic: llm.chat.request
     consumerGroup: llm_worker
-  env: []
+  env:
+    - name: KAFKA_SERVERS
+      value: "kafka:9092"
   hfCache:
     enabled: true
     size: 10Gi
