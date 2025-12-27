@@ -57,7 +57,7 @@ frontend:
   enabled: true
   image:
     repository: ghcr.io/csu-itmo-2025-2/team8-frontend
-    tag: sha-67eecd0
+    tag: sha-5f2f23d
   containerPort: 4173
   env:
     - name: API_ROUTE
