@@ -28,14 +28,6 @@ spec:
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy | default "IfNotPresent" }}
 
-          # Обычно воркер не слушает входящие порты; если нужно — включишь через values.
-          {{- if .Values.worker.containerPort }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.worker.containerPort }}
-              protocol: TCP
-          {{- end }}
-
           env:
             {{- with .Values.worker.env }}
             {{- toYaml . | nindent 12 }}
