@@ -4,7 +4,7 @@ app:
   containerPort: 8080
   image:
     repository: ghcr.io/csu-itmo-2025-2/team8-backend
-    tag: sha-1dd9b85
+    tag: sha-8d11c6b
     pullPolicy: IfNotPresent
 
   env:
@@ -37,7 +37,7 @@ worker:
   replicaCount: 1
   image:
     repository: ghcr.io/csu-itmo-2025-2/team-8-llm-worker
-    tag: sha-054c377
+    tag: sha-b92aa6a
     pullPolicy: IfNotPresent
   httpPort: 8080
   kafka:
