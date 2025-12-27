@@ -62,6 +62,10 @@ worker:
       enabled: true
       path: /shutdown
   terminationGracePeriodSeconds: 60
+  tmpDir:
+    enabled: true
+    mountPath: /tmp
+    sizeLimit: ""
   podSecurityContext:
     fsGroup: 1000
   securityContext:
