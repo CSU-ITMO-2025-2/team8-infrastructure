@@ -9,7 +9,7 @@ app:
 
   env:
     - name: KAFKA_SERVERS
-      value: "kafka:9092"
+      value: "kafka.team8-ns.svc:9092"
 
   resources:
     requests:
@@ -41,12 +41,12 @@ worker:
     pullPolicy: IfNotPresent
   httpPort: 8080
   kafka:
-    bootstrapServers: "kafka:9092"
+    bootstrapServers: "kafka.team8-ns.svc:9092"
     topic: llm.chat.request
     consumerGroup: llm_worker
   env:
     - name: KAFKA_SERVERS
-      value: "kafka:9092"
+      value: "kafka.team8-ns.svc:9092"
   hfCache:
     enabled: true
     mountPath: /var/cache/huggingface
