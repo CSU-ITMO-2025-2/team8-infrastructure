@@ -22,6 +22,8 @@ spec:
         app.kubernetes.io/component: llm-worker
     spec:
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds | default 60 }}
+      securityContext:
+        {{- toYaml (coalesce .Values.worker.podSecurityContext .Values.podSecurityContext) | nindent 8 }}
       containers:
         - name: llm-worker
           securityContext:
