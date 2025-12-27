@@ -156,18 +156,3 @@ ingress:
 podAntiAffinity:
   enabled: false
 
-dozzle:
-  enabled: true
-  image:
-    repository: amir20/dozzle
-    tag: v8.14.12
-    pullPolicy: IfNotPresent
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
-
-
