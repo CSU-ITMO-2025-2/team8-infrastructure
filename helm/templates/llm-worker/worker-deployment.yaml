@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "team8-app.fullname" . }}-llm-worker
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: llm-worker
+spec:
+  replicas: {{ .Values.worker.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "team8-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: llm-worker
+  template:
+    metadata:
+      {{- with .Values.worker.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "team8-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: llm-worker
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "team8-app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      containers:
+        - name: llm-worker
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy | default "IfNotPresent" }}
+
+          # Обычно воркер не слушает входящие порты; если нужно — включишь через values.
+          {{- if .Values.worker.containerPort }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.worker.containerPort }}
+              protocol: TCP
+          {{- end }}
+
+          env:
+            {{- with .Values.worker.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+          resources:
+            {{- toYaml .Values.worker.resources | nindent 12 }}
+
+      {{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- $paa := .Values.worker.podAntiAffinity | default dict -}}
+      {{- if or ($paa.enabled | default false) .Values.worker.affinity }}
+      affinity:
+        {{- if ($paa.enabled | default false) }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: {{ include "team8-app.name" . }}
+                  app.kubernetes.io/component: llm-worker
+              topologyKey: {{ $paa.topologyKey | default "kubernetes.io/hostname" }}
+        {{- end }}
+        {{- with .Values.worker.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+
+      {{- with .Values.worker.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
