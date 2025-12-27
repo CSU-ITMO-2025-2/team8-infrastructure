@@ -21,14 +21,6 @@ spec:
         {{- include "team8-app.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: llm-worker
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "team8-app.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-
       containers:
         - name: llm-worker
           securityContext:
