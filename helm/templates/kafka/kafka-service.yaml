@@ -9,7 +9,7 @@ spec:
     - name: kafka
       port: {{ .Values.kafka.service.brokerPort | default 9092 }}
       targetPort: {{ .Values.kafka.service.brokerPort | default 9092 }}
-    - name: controller
-      port: {{ .Values.kafka.service.controllerPort | default 9093 }}
-      targetPort: {{ .Values.kafka.service.controllerPort | default 9093 }}
+{{/*    - name: controller*/}}
+{{/*      port: {{ .Values.kafka.service.controllerPort | default 9093 }}*/}}
+{{/*      targetPort: {{ .Values.kafka.service.controllerPort | default 9093 }}*/}}
   type: ClusterIP
