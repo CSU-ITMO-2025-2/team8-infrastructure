@@ -37,7 +37,7 @@ worker:
   replicaCount: 1
   image:
     repository: ghcr.io/csu-itmo-2025-2/team-8-llm-worker
-    tag: sha-5c6c006
+    tag: sha-30d24e7
     pullPolicy: IfNotPresent
   env:
     - name: KAFKA_SERVERS
