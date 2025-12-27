@@ -14,10 +14,10 @@ app:
   resources:
     requests:
       cpu: 250m
-      memory: 512Mi
+      memory: 128Mi
     limits:
       cpu: 500m
-      memory: 1Gi
+      memory: 256Gi
 
   rollout:
     enabled: false
@@ -51,7 +51,7 @@ worker:
       memory: 2Gi
     limits:
       cpu: 1500m
-      memory: 5Gi
+      memory: 4.6Gi
 
 frontend:
   enabled: true
