@@ -3,6 +3,7 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: {{ include "team8-app.fullname" . }}-llm-worker
+  namespace: team8-ns
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
     app.kubernetes.io/component: llm-worker
