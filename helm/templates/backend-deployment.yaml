@@ -17,6 +17,7 @@ spec:
       {{- end }}
       labels:
         {{- include "team8-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: backend
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

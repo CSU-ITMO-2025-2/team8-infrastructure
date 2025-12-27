@@ -4,6 +4,7 @@ metadata:
   name: {{ include "team8-app.fullname" . }}
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
 spec:
   type: {{ .Values.serviceBackend.type }}
   ports:
