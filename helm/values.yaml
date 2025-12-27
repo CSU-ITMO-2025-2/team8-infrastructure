@@ -30,7 +30,7 @@ vault:
   kvMount: "kv"
   kvVersion: "v1"
   kubernetesAuthMount: "kubernetes"
-  role: "team8-ns"
+  role: "team8"
   envPath: "team8/backend"
 
 #worker: # llm_worker
