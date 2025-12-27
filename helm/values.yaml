@@ -83,7 +83,7 @@ worker:
     targetCPUUtilizationPercentage: 60
   keda:
     enabled: true
-    bootstrapServers: "kafka:9092"
+    bootstrapServers: "kafka.team8-ns.svc:9092"
     topic: llm.chat.request
     consumerGroup: llm_worker
     lagThreshold: 10
