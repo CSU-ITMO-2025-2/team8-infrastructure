@@ -62,12 +62,27 @@ spec:
               port: http
             initialDelaySeconds: {{ .Values.worker.probes.liveness.initialDelaySeconds | default 10 }}
             periodSeconds: {{ .Values.worker.probes.liveness.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.worker.probes.liveness.timeoutSeconds | default 5 }}
+            failureThreshold: {{ .Values.worker.probes.liveness.failureThreshold | default 3 }}
           readinessProbe:
             httpGet:
               path: {{ .Values.worker.probes.readiness.path | default "/health/ready" }}
               port: http
             initialDelaySeconds: {{ .Values.worker.probes.readiness.initialDelaySeconds | default 5 }}
             periodSeconds: {{ .Values.worker.probes.readiness.periodSeconds | default 5 }}
+            timeoutSeconds: {{ .Values.worker.probes.readiness.timeoutSeconds | default 3 }}
+            failureThreshold: {{ .Values.worker.probes.readiness.failureThreshold | default 3 }}
+
+          {{- with .Values.worker.probes.startup }}
+          {{- if or (not (hasKey $.Values.worker.probes "startup")) (.enabled | default true) }}
+          startupProbe:
+            httpGet:
+              path: {{ .path | default "/health/live" }}
+              port: http
+            periodSeconds: {{ .periodSeconds | default 10 }}
+            failureThreshold: {{ .failureThreshold | default 18 }}
+          {{- end }}
+          {{- end }}
 
           lifecycle:
             {{- if or (not (hasKey .Values.worker "lifecycle")) (.Values.worker.lifecycle.preStop.enabled | default true) }}

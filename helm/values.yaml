@@ -54,12 +54,21 @@ worker:
   probes:
     readiness:
       path: /health/ready
-      initialDelaySeconds: 5
-      periodSeconds: 5
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
     liveness:
       path: /health/live
-      initialDelaySeconds: 10
+      initialDelaySeconds: 60
+      periodSeconds: 20
+      timeoutSeconds: 5
+      failureThreshold: 5
+    startup:
+      enabled: true
+      path: /health/live
       periodSeconds: 10
+      failureThreshold: 18
   lifecycle:
     preStop:
       enabled: true
