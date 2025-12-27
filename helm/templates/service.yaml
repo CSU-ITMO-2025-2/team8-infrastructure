@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "team8-app.fullname" . }}
+  name: backend
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
     app.kubernetes.io/component: backend
