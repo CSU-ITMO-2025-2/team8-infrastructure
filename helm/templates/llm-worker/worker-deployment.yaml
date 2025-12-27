@@ -21,20 +21,52 @@ spec:
         {{- include "team8-app.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: llm-worker
     spec:
+      terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds | default 60 }}
       containers:
         - name: llm-worker
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml (coalesce .Values.worker.securityContext .Values.securityContext) | nindent 12 }}
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.worker.httpPort | default 8080 }}
+              protocol: TCP
 
           envFrom:
             - secretRef:
                 name: hf-credentials
 
           env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: {{ .Values.worker.kafka.bootstrapServers | quote }}
+            - name: KAFKA_TOPIC
+              value: {{ .Values.worker.kafka.topic | quote }}
+            - name: KAFKA_CONSUMER_GROUP
+              value: {{ .Values.worker.kafka.consumerGroup | quote }}
             {{- with .Values.worker.env }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.worker.probes.liveness.path | default "/health/live" }}
+              port: http
+            initialDelaySeconds: {{ .Values.worker.probes.liveness.initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .Values.worker.probes.liveness.periodSeconds | default 10 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.worker.probes.readiness.path | default "/health/ready" }}
+              port: http
+            initialDelaySeconds: {{ .Values.worker.probes.readiness.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.worker.probes.readiness.periodSeconds | default 5 }}
+
+          lifecycle:
+            {{- if or (not (hasKey .Values.worker "lifecycle")) (.Values.worker.lifecycle.preStop.enabled | default true) }}
+            preStop:
+              httpGet:
+                path: {{ .Values.worker.lifecycle.preStop.path | default "/shutdown" }}
+                port: http
             {{- end }}
 
           resources:

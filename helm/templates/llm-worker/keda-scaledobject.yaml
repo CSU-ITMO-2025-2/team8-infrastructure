@@ -1,0 +1,30 @@
+{{- if .Values.worker.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "team8-app.fullname" . }}-llm-worker
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: llm-worker
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: {{ include "team8-app.fullname" . }}-llm-worker
+  pollingInterval: {{ .Values.worker.keda.pollingInterval | default 10 }}
+  cooldownPeriod: {{ .Values.worker.keda.cooldownPeriod | default 60 }}
+  minReplicaCount: {{ .Values.worker.keda.minReplicaCount | default 1 }}
+  maxReplicaCount: {{ .Values.worker.keda.maxReplicaCount | default 10 }}
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: {{ coalesce .Values.worker.keda.bootstrapServers .Values.worker.kafka.bootstrapServers | quote }}
+        consumerGroup: {{ coalesce .Values.worker.keda.consumerGroup .Values.worker.kafka.consumerGroup | quote }}
+        topic: {{ coalesce .Values.worker.keda.topic .Values.worker.kafka.topic | quote }}
+        lagThreshold: {{ .Values.worker.keda.lagThreshold | default 10 | quote }}
+  {{- with .Values.worker.keda.behavior }}
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        {{- toYaml . | nindent 8 }}
+  {{- end }}
+{{- end }}
