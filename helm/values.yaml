@@ -160,7 +160,7 @@ dozzle:
   enabled: true
   image:
     repository: amir20/dozzle
-    tag: v8.6.0
+    tag: v8.14.12
     pullPolicy: IfNotPresent
   resources:
     requests:
