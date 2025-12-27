@@ -9,7 +9,8 @@ metadata:
     {{- include "team8-app.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   {{- end }}
 spec:
   {{- if .Values.ingress.className }}
