@@ -1,0 +1,54 @@
+{{- if .Values.debugWeb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "team8-app.fullname" . }}-debug-web
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: debug-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "team8-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: debug-web
+  template:
+    metadata:
+      labels:
+        {{- include "team8-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: debug-web
+    spec:
+      containers:
+        - name: debug-web
+          image: "{{ .Values.debugWeb.image.repository }}:{{ .Values.debugWeb.image.tag }}"
+          imagePullPolicy: {{ .Values.debugWeb.image.pullPolicy | default "IfNotPresent" }}
+          args:
+            - "-listen=:{{ .Values.debugWeb.port }}"
+            - "-text={{ .Values.debugWeb.text }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.debugWeb.port }}
+          resources:
+            requests:
+              cpu: {{ .Values.debugWeb.resources.requests.cpu | default "5m" | quote }}
+              memory: {{ .Values.debugWeb.resources.requests.memory | default "16Mi" | quote }}
+            limits:
+              cpu: {{ .Values.debugWeb.resources.limits.cpu | default "50m" | quote }}
+              memory: {{ .Values.debugWeb.resources.limits.memory | default "64Mi" | quote }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "team8-app.fullname" . }}-debug-web
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: debug-web
+spec:
+  selector:
+    {{- include "team8-app.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: debug-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+{{- end }}
