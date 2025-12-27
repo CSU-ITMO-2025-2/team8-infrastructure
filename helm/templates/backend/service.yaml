@@ -14,3 +14,4 @@ spec:
       name: http
   selector:
     {{- include "team8-app.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
