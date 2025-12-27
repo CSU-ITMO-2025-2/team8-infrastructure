@@ -1,0 +1,94 @@
+{{- if .Values.dozzle.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "team8-app.fullname" . }}-dozzle
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "team8-app.fullname" . }}-dozzle
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "team8-app.fullname" . }}-dozzle
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "team8-app.fullname" . }}-dozzle
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "team8-app.fullname" . }}-dozzle
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "team8-app.fullname" . }}-dozzle
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dozzle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "team8-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: dozzle
+  template:
+    metadata:
+      labels:
+        {{- include "team8-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: dozzle
+    spec:
+      serviceAccountName: {{ include "team8-app.fullname" . }}-dozzle
+      containers:
+        - name: dozzle
+          image: "{{ .Values.dozzle.image.repository }}:{{ .Values.dozzle.image.tag }}"
+          imagePullPolicy: {{ .Values.dozzle.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: DOZZLE_MODE
+              value: "k8s"
+            - name: DOZZLE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          resources:
+            requests:
+              cpu: {{ .Values.dozzle.resources.requests.cpu | default "10m" | quote }}
+              memory: {{ .Values.dozzle.resources.requests.memory | default "32Mi" | quote }}
+            limits:
+              cpu: {{ .Values.dozzle.resources.limits.cpu | default "100m" | quote }}
+              memory: {{ .Values.dozzle.resources.limits.memory | default "128Mi" | quote }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "team8-app.fullname" . }}-dozzle
+  labels:
+    {{- include "team8-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dozzle
+spec:
+  selector:
+    {{- include "team8-app.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: dozzle
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+{{- end }}
