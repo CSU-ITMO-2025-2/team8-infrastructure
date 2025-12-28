@@ -36,8 +36,8 @@ vault:
 worker:
   replicaCount: 1
   image:
-    repository: ghcr.io/csu-itmo-2025-2/team-8-llm-worker
-    tag: sha-b92aa6a
+    repository: ghcr.io/csu-itmo-2025-2/team-8-llm-worker/dummy-llm-worker
+    tag: latest
     pullPolicy: IfNotPresent
   httpPort: 8080
   kafka:
@@ -114,11 +114,11 @@ worker:
             periodSeconds: 60
   resources:
     requests:
-      cpu: 750m
-      memory: 1Gi
+      cpu: 25m
+      memory: 32Mi
     limits:
-      cpu: 1000m
-      memory: 2Gi
+      cpu: 100m
+      memory: 64Mi
 
 kafka:
   replicaCount: 1

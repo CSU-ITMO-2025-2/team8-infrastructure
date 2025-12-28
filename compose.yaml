@@ -2,108 +2,110 @@ name: team-8
 
 services:
 
-  liquibase:
-    image: liquibase:4.31.1-alpine
-    volumes:
-      - "./liquibase/changelog:/liquibase/changelog"
-      - "./liquibase/liquibase.properties:/liquibase/liquibase.properties"
-    environment:
-      - "LIQUIBASE_COMMAND_USERNAME=${DB_USER:-postgres}"
-      - "LIQUIBASE_COMMAND_PASSWORD=${DB_PASS:-pass}"
-      - "LIQUIBASE_COMMAND_URL=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
-    command: ["liquibase", "update"]
+#  liquibase:
+#    image: liquibase:4.31.1-alpine
+#    volumes:
+#      - "./liquibase/changelog:/liquibase/changelog"
+#      - "./liquibase/liquibase.properties:/liquibase/liquibase.properties"
+#    environment:
+#      - "LIQUIBASE_COMMAND_USERNAME=${DB_USER:-postgres}"
+#      - "LIQUIBASE_COMMAND_PASSWORD=${DB_PASS:-pass}"
+#      - "LIQUIBASE_COMMAND_URL=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+#    command: ["liquibase", "update"]
+#
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@example.com
+#      PGADMIN_DEFAULT_PASSWORD: admin
+#      PGADMIN_CONFIG_SERVER_MODE: "False"
+#    volumes:
+#      - "./pgadmin/servers.json:/pgadmin4/servers.json"
+#    ports:
+#      - "5050:80"
+#    restart: always
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-    volumes:
-      - "./pgadmin/servers.json:/pgadmin4/servers.json"
-    ports:
-      - "5050:80"
-    restart: always
-
-  kafka:
-    image: bitnamilegacy/kafka:4.0.0-debian-12-r10
-    ports:
-      - "9092:9092"
-      - "9094:9094"
-    volumes:
-      - kafka_data:/bitnami/kafka
-    environment:
-      - KAFKA_CFG_NODE_ID=0
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      #        - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      #        - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
-      #        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-    healthcheck:
-      test: ["CMD-SHELL", "bash -ec 'echo > /dev/tcp/127.0.0.1/9092'"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: always
+#  kafka:
+#    image: bitnamilegacy/kafka:4.0.0-debian-12-r10
+#    ports:
+#      - "9092:9092"
+#      - "9094:9094"
+#    volumes:
+#      - kafka_data:/bitnami/kafka
+#    environment:
+#      - KAFKA_CFG_NODE_ID=0
+#      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#      #        - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+#      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+#      #        - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+#      #        - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+#    healthcheck:
+#      test: ["CMD-SHELL", "bash -ec 'echo > /dev/tcp/127.0.0.1/9092'"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    restart: always
 
   akhq:
     image: tchiotludo/akhq:latest
     ports:
       - "8091:8080"
+    extra_hosts:
+      - "kafka.team8-ns.svc.cluster.local:host-gateway"
     environment:
       AKHQ_CONFIGURATION: |
         akhq:
-            connections:
-                bitnami-kafka:
-                    properties:
-                        bootstrap.servers: "kafka:9092"
-    depends_on:
-      - kafka
+          connections:
+            bitnami-kafka:
+              properties:
+                bootstrap.servers: "kafka.team8-ns.svc.cluster.local:9092"
+#    depends_on:
+#      - kafka
     restart: always
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      KAFKA_SERVERS: "kafka:9092"
-    depends_on:
-      kafka:
-        condition: service_healthy
-    restart: always
-
-  llm_worker:
-    build:
-      context: ./llm-worker
-      dockerfile: Dockerfile
-    environment:
-      KAFKA_SERVERS: "kafka:9092"
-    volumes:
-      - hf_cache:/root/.cache/huggingface/
-    depends_on:
-      kafka:
-        condition: service_healthy
-    restart: always
-
-  web:
-    build: ./team8-frontend
-    container_name: team8-frontend
-    depends_on:
-      - backend
-    ports:
-      - "3000:4173"
-    env_file:
-      - team8-frontend/.env
-    environment:
-      - API_ROUTE=backend
-    restart: unless-stopped
+#  backend:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      KAFKA_SERVERS: "kafka:9092"
+#    depends_on:
+#      kafka:
+#        condition: service_healthy
+#    restart: always
+#
+#  llm_worker:
+#    build:
+#      context: ./llm-worker
+#      dockerfile: Dockerfile
+#    environment:
+#      KAFKA_SERVERS: "kafka:9092"
+#    volumes:
+#      - hf_cache:/root/.cache/huggingface/
+#    depends_on:
+#      kafka:
+#        condition: service_healthy
+#    restart: always
+#
+#  web:
+#    build: ./team8-frontend
+#    container_name: team8-frontend
+#    depends_on:
+#      - backend
+#    ports:
+#      - "3000:4173"
+#    env_file:
+#      - team8-frontend/.env
+#    environment:
+#      - API_ROUTE=backend
+#    restart: unless-stopped
 
 volumes:
   kafka_data:
