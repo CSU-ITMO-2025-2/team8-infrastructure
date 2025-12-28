@@ -2,10 +2,9 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "team8-app.fullname" . }}-frontend
+  name: frontend-HorizontalPodAutoscaler
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
-    app.kubernetes.io/component: frontend
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
