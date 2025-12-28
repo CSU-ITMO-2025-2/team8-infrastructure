@@ -95,6 +95,7 @@ worker:
     bootstrapServers: "kafka.team8-ns.svc.cluster.local:9092"
     topic: llm.chat.request
     consumerGroup: llm_worker
+    allowIdleConsumers: true
     lagThreshold: 10
     activationLagThreshold: 1
     pollingInterval: 10

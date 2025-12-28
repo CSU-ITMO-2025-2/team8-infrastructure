@@ -22,6 +22,9 @@ spec:
         consumerGroup: {{ coalesce .Values.worker.keda.consumerGroup .Values.worker.kafka.consumerGroup | quote }}
         topic: {{ coalesce .Values.worker.keda.topic .Values.worker.kafka.topic | quote }}
         lagThreshold: {{ .Values.worker.keda.lagThreshold | default 10 | quote }}
+        {{- if hasKey .Values.worker.keda "allowIdleConsumers" }}
+        allowIdleConsumers: {{ ternary "true" "false" .Values.worker.keda.allowIdleConsumers | quote }}
+        {{- end }}
         activationLagThreshold: {{ .Values.worker.keda.activationLagThreshold | default 0 | quote }}
   {{- with .Values.worker.keda.behavior }}
   advanced:
