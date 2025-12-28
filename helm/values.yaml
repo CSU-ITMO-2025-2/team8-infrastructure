@@ -37,7 +37,7 @@ worker:
   replicaCount: 1
   image:
     repository: ghcr.io/csu-itmo-2025-2/team-8-llm-worker/dummy-llm-worker
-    tag: latest
+    tag: sha-8b15081
     pullPolicy: IfNotPresent
   httpPort: 8080
   kafka:
