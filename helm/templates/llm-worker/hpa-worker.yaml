@@ -4,7 +4,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "team8-app.fullname" . }}-llm-worker
   labels:
-    {{- include "team8-app.labels" . | nindent 4 }}
+    {{- include "demo-worker.labels" . | nindent 4 }}
     app.kubernetes.io/component: llm-worker
 spec:
   scaleTargetRef:
