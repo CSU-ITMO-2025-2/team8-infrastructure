@@ -71,7 +71,7 @@ worker:
       failureThreshold: 18
   lifecycle:
     preStop:
-      enabled: true
+      enabled: false
       path: /shutdown
   terminationGracePeriodSeconds: 60
   tmpDir:
