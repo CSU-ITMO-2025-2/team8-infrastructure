@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.app.replicaCount | default 1 }}
+  replicas: {{ .Values.frontend.replicaCount | default 1 }}
   selector:
     matchLabels:
       {{- include "team8-app.selectorLabels" . | nindent 6 }}

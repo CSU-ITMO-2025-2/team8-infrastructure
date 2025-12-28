@@ -152,6 +152,7 @@ kafka:
 
 frontend:
   enabled: true
+  replicaCount: 1
   image:
     repository: ghcr.io/csu-itmo-2025-2/team8-frontend
     tag: sha-ccb0b0c
@@ -170,6 +171,12 @@ frontend:
     limits:
       cpu: 250m
       memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70m
+    targetMemoryUtilizationPercentage: 200Mi
 
 #migrations:
 #  enabled: true
