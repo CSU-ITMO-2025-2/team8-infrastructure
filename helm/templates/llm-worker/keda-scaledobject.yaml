@@ -8,6 +8,7 @@ metadata:
     {{- include "demo-worker.labels" . | nindent 4 }}
     app.kubernetes.io/component: llm-worker
 spec:
+  serviceAccountName: {{ include "team8-app.fullname" . }}-keda-reader
   scaleTargetRef:
     kind: Deployment
     name: {{ include "team8-app.fullname" . }}-llm-worker
