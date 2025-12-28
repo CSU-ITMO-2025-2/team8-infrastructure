@@ -2,7 +2,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: frontend-HorizontalPodAutoscaler
+  name: frontend-horizontal-scaler
   labels:
     {{- include "team8-app.labels" . | nindent 4 }}
 spec:
